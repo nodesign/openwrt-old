@@ -1,11 +1,36 @@
-/*
- *  8devices Carambola2 board support
+/**
+ * WEIO Web Of Things Platform
  *
- *  Copyright (C) 2013 Darius Augulis <darius@8devices.com>
+ * Copyright (C) 2013 Drasko DRASKOVIC and Uros PETREVSKI
+ * All rights reserved
  *
- *  This program is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU General Public License version 2 as published
- *  by the Free Software Foundation.
+ *              ##      ## ######## ####  #######  
+ *              ##  ##  ## ##        ##  ##     ## 
+ *              ##  ##  ## ##        ##  ##     ## 
+ *              ##  ##  ## ######    ##  ##     ## 
+ *              ##  ##  ## ##        ##  ##     ## 
+ *              ##  ##  ## ##        ##  ##     ## 
+ *               ###  ###  ######## ####  #######
+ *
+ *                   Web Of Things Platform 
+ *
+ * This file is part of WEIO
+ * WEIO is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WEIO is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors : 
+ * Drasko DRASKOVIC <drasko.draskovic@gmail.com>
+ * Uros PETREVSKI <uros@nodesign.net>
  */
 
 #include <asm/mach-ath79/ath79.h>
@@ -20,68 +45,70 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
-#define CARAMBOLA2_GPIO_LED_WLAN		0
-#define CARAMBOLA2_GPIO_LED_ETH0		14
-#define CARAMBOLA2_GPIO_LED_ETH1		13
+#define WEIO_GPIO_LED_WLAN		0
+#define WEIO_GPIO_LED_ETH0		14
+#define WEIO_GPIO_LED_ETH1		13
 
-#define CARAMBOLA2_GPIO_BTN_JUMPSTART		11
-#define CARAMBOLA2_GPIO_BTN_RESET		12
+#define WEIO_GPIO_BTN_JUMPSTART	11
+#define WEIO_GPIO_BTN_RESET		12
 
-#define CARAMBOLA2_KEYS_POLL_INTERVAL		20	/* msecs */
-#define CARAMBOLA2_KEYS_DEBOUNCE_INTERVAL	(3 * CARAMBOLA2_KEYS_POLL_INTERVAL)
+#define WEIO_KEYS_POLL_INTERVAL		20	/* msecs */
+#define WEIO_KEYS_DEBOUNCE_INTERVAL	(3 * WEIO_KEYS_POLL_INTERVAL)
 
-#define CARAMBOLA2_MAC0_OFFSET			0x0000
-#define CARAMBOLA2_MAC1_OFFSET			0x0006
-#define CARAMBOLA2_CALDATA_OFFSET		0x1000
-#define CARAMBOLA2_WMAC_MAC_OFFSET		0x1002
+#define WEIO_MAC0_OFFSET			0x0000
+#define WEIO_MAC1_OFFSET			0x0006
+#define WEIO_CALDATA_OFFSET		    0x1000
+#define WEIO_WMAC_MAC_OFFSET		0x1002
 
-static struct gpio_led carambola2_leds_gpio[] __initdata = {
+static struct gpio_led weio_leds_gpio[] __initdata = {
 	{
-		.name		= "carambola2:green:wlan",
-		.gpio		= CARAMBOLA2_GPIO_LED_WLAN,
+		.name		= "weio:green:wlan",
+		.gpio		= WEIO_GPIO_LED_WLAN,
 		.active_low	= 1,
 	}, {
-		.name		= "carambola2:orange:eth0",
-		.gpio		= CARAMBOLA2_GPIO_LED_ETH0,
+		.name		= "weio:orange:eth0",
+		.gpio		= WEIO_GPIO_LED_ETH0,
 		.active_low	= 0,
 	}, {
-		.name		= "carambola2:orange:eth1",
-		.gpio		= CARAMBOLA2_GPIO_LED_ETH1,
+		.name		= "weio:orange:eth1",
+		.gpio		= WEIO_GPIO_LED_ETH1,
 		.active_low	= 0,
 	}
 };
 
-static struct gpio_keys_button carambola2_gpio_keys[] __initdata = {
+static struct gpio_keys_button weio_gpio_keys[] __initdata = {
 	{
 		.desc		= "jumpstart button",
 		.type		= EV_KEY,
 		.code		= KEY_WPS_BUTTON,
-		.debounce_interval = CARAMBOLA2_KEYS_DEBOUNCE_INTERVAL,
-		.gpio		= CARAMBOLA2_GPIO_BTN_JUMPSTART,
+		.debounce_interval = WEIO_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= WEIO_GPIO_BTN_JUMPSTART,
 		.active_low	= 1,
 	},
 	{
 		.desc		= "reset button",
 		.type		= EV_KEY,
 		.code		= KEY_RESTART,
-		.debounce_interval = CARAMBOLA2_KEYS_DEBOUNCE_INTERVAL,
-		.gpio		= CARAMBOLA2_GPIO_BTN_RESET,
+		.debounce_interval = WEIO_KEYS_DEBOUNCE_INTERVAL,
+		.gpio		= WEIO_GPIO_BTN_RESET,
 		.active_low	= 1,
 	}
 };
 
-static void __init carambola2_common_setup(void)
+static void __init weio_common_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
 
 	ath79_register_m25p80(NULL);
-	ath79_register_wmac(art + CARAMBOLA2_CALDATA_OFFSET,
-			    art + CARAMBOLA2_WMAC_MAC_OFFSET);
+	ath79_register_wmac(art + WEIO_CALDATA_OFFSET,
+			    art + WEIO_WMAC_MAC_OFFSET);
 
+    /** WeIO does not use ETH - only WiFi by default */
+#if 0
 	ath79_setup_ar933x_phy4_switch(true, true);
 
-	ath79_init_mac(ath79_eth0_data.mac_addr, art + CARAMBOLA2_MAC0_OFFSET, 0);
-	ath79_init_mac(ath79_eth1_data.mac_addr, art + CARAMBOLA2_MAC1_OFFSET, 0);
+	ath79_init_mac(ath79_eth0_data.mac_addr, art + WEIO_MAC0_OFFSET, 0);
+	ath79_init_mac(ath79_eth1_data.mac_addr, art + WEIO_MAC1_OFFSET, 0);
 
 	ath79_register_mdio(0, 0x0);
 
@@ -90,11 +117,12 @@ static void __init carambola2_common_setup(void)
 
 	/* WAN port */
 	ath79_register_eth(0);
+#endif /** commented out ETH */
 }
 
-static void __init carambola2_setup(void)
+static void __init weio_setup(void)
 {
-	carambola2_common_setup();
+	weio_common_setup();
 
 	ath79_gpio_function_disable(AR724X_GPIO_FUNC_ETH_SWITCH_LED0_EN |
 				AR724X_GPIO_FUNC_ETH_SWITCH_LED1_EN |
@@ -102,13 +130,13 @@ static void __init carambola2_setup(void)
 				AR724X_GPIO_FUNC_ETH_SWITCH_LED3_EN |
 				AR724X_GPIO_FUNC_ETH_SWITCH_LED4_EN);
 
-	ath79_register_leds_gpio(-1, ARRAY_SIZE(carambola2_leds_gpio),
-				 carambola2_leds_gpio);
-	ath79_register_gpio_keys_polled(-1, CARAMBOLA2_KEYS_POLL_INTERVAL,
-					ARRAY_SIZE(carambola2_gpio_keys),
-					carambola2_gpio_keys);
+	ath79_register_leds_gpio(-1, ARRAY_SIZE(weio_leds_gpio),
+				 weio_leds_gpio);
+	ath79_register_gpio_keys_polled(-1, WEIO_KEYS_POLL_INTERVAL,
+					ARRAY_SIZE(weio_gpio_keys),
+					weio_gpio_keys);
 	ath79_register_usb();
 }
 
-MIPS_MACHINE(ATH79_MACH_CARAMBOLA2, "CARAMBOLA2", "8devices Carambola2 board",
-		carambola2_setup);
+MIPS_MACHINE(ATH79_MACH_WEIO, "WEIO", "WeIO board from Drasko DRASKOVIC and Uros PETREVSKI",
+		weio_setup);

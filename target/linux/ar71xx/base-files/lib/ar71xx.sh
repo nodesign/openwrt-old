@@ -615,7 +615,7 @@ ar71xx_board_detect() {
 	*"8devices Carambola2")
 		name="carambola2"
 		;;
-    *"WeIO")
+	*"WeIO")
 		name="weio"
 		;;
 	*"Sitecom WLR-8100")
