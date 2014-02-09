@@ -48,6 +48,12 @@ carambola2)
 	ucidef_set_led_wlan "wlan" "WLAN" "carambola2:green:wlan" "phy0tpt"
 	;;
 
+weio)
+	ucidef_set_led_netdev "lan" "LAN" "weio:orange:eth0" "eth0"
+	ucidef_set_led_netdev "wan" "WAN" "weio:orange:eth1" "eth1"
+	ucidef_set_led_wlan "wlan" "WLAN" "weio:green:wlan" "phy0tpt"
+	;;
+
 db120)
 	ucidef_set_led_usbdev "usb" "USB" "db120:green:usb" "1-1"
 	;;
