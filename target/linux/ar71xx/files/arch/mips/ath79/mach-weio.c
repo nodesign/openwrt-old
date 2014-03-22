@@ -45,12 +45,12 @@
 #include "dev-wmac.h"
 #include "machtypes.h"
 
-#define WEIO_GPIO_LED_WLAN		0
-#define WEIO_GPIO_LED_ETH0		14
-#define WEIO_GPIO_LED_ETH1		13
+#define WEIO_GPIO_LED_STA		1
+#define WEIO_GPIO_LED_AP		16
+//#define WEIO_GPIO_LED_ETH0	13
 
-#define WEIO_GPIO_BTN_JUMPSTART	11
-#define WEIO_GPIO_BTN_RESET		12
+#define WEIO_GPIO_BTN_AP	    20
+#define WEIO_GPIO_BTN_RESET		15
 
 #define WEIO_KEYS_POLL_INTERVAL		20	/* msecs */
 #define WEIO_KEYS_DEBOUNCE_INTERVAL	(3 * WEIO_KEYS_POLL_INTERVAL)
@@ -62,27 +62,23 @@
 
 static struct gpio_led weio_leds_gpio[] __initdata = {
 	{
-		.name		= "weio:green:wlan",
-		.gpio		= WEIO_GPIO_LED_WLAN,
+		.name		= "sta",
+		.gpio		= WEIO_GPIO_LED_STA,
 		.active_low	= 1,
 	}, {
-		.name		= "weio:orange:eth0",
-		.gpio		= WEIO_GPIO_LED_ETH0,
-		.active_low	= 0,
-	}, {
-		.name		= "weio:orange:eth1",
-		.gpio		= WEIO_GPIO_LED_ETH1,
-		.active_low	= 0,
+		.name		= "ap",
+		.gpio		= WEIO_GPIO_LED_AP,
+		.active_low	= 1,
 	}
 };
 
 static struct gpio_keys_button weio_gpio_keys[] __initdata = {
 	{
-		.desc		= "jumpstart button",
+		.desc		= "ap button",
 		.type		= EV_KEY,
 		.code		= KEY_WPS_BUTTON,
 		.debounce_interval = WEIO_KEYS_DEBOUNCE_INTERVAL,
-		.gpio		= WEIO_GPIO_BTN_JUMPSTART,
+		.gpio		= WEIO_GPIO_BTN_AP,
 		.active_low	= 1,
 	},
 	{
