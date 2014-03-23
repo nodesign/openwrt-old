@@ -62,11 +62,11 @@
 
 static struct gpio_led weio_leds_gpio[] __initdata = {
 	{
-		.name		= "sta",
+		.name		= "weio:green:sta",
 		.gpio		= WEIO_GPIO_LED_STA,
 		.active_low	= 1,
 	}, {
-		.name		= "ap",
+		.name		= "weio:green:ap",
 		.gpio		= WEIO_GPIO_LED_AP,
 		.active_low	= 1,
 	}
