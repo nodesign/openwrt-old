@@ -65,10 +65,12 @@ static struct gpio_led weio_leds_gpio[] __initdata = {
 		.name		= "weio:green:sta",
 		.gpio		= WEIO_GPIO_LED_STA,
 		.active_low	= 1,
+        .default_state = LEDS_GPIO_DEFSTATE_ON,
 	}, {
 		.name		= "weio:green:ap",
 		.gpio		= WEIO_GPIO_LED_AP,
 		.active_low	= 1,
+        .default_state = LEDS_GPIO_DEFSTATE_ON,
 	}
 };
 
@@ -76,15 +78,15 @@ static struct gpio_keys_button weio_gpio_keys[] __initdata = {
 	{
 		.desc		= "ap button",
 		.type		= EV_KEY,
-		.code		= KEY_WPS_BUTTON,
+		.code		= BTN_0,
 		.debounce_interval = WEIO_KEYS_DEBOUNCE_INTERVAL,
 		.gpio		= WEIO_GPIO_BTN_AP,
 		.active_low	= 1,
 	},
 	{
-		.desc		= "reset button",
+		.desc		= "soft-reset button",
 		.type		= EV_KEY,
-		.code		= KEY_RESTART,
+		.code		= BTN_1,
 		.debounce_interval = WEIO_KEYS_DEBOUNCE_INTERVAL,
 		.gpio		= WEIO_GPIO_BTN_RESET,
 		.active_low	= 1,
@@ -120,14 +122,16 @@ static void __init weio_setup(void)
 {
 	weio_common_setup();
 
-	ath79_gpio_function_disable(AR724X_GPIO_FUNC_ETH_SWITCH_LED0_EN |
-				AR724X_GPIO_FUNC_ETH_SWITCH_LED1_EN |
-				AR724X_GPIO_FUNC_ETH_SWITCH_LED2_EN |
-				AR724X_GPIO_FUNC_ETH_SWITCH_LED3_EN |
-				AR724X_GPIO_FUNC_ETH_SWITCH_LED4_EN);
+    
+	ath79_gpio_function_disable(AR933X_GPIO_FUNC_ETH_SWITCH_LED0_EN |
+				AR933X_GPIO_FUNC_ETH_SWITCH_LED1_EN |
+				AR933X_GPIO_FUNC_ETH_SWITCH_LED2_EN |
+				AR933X_GPIO_FUNC_ETH_SWITCH_LED3_EN |
+                AR933X_GPIO_FUNC_ETH_SWITCH_LED4_EN);
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(weio_leds_gpio),
 				 weio_leds_gpio);
+
 	ath79_register_gpio_keys_polled(-1, WEIO_KEYS_POLL_INTERVAL,
 					ARRAY_SIZE(weio_gpio_keys),
 					weio_gpio_keys);
