@@ -44,6 +44,8 @@
 #include "dev-usb.h"
 #include "dev-wmac.h"
 #include "machtypes.h"
+#include "linux/i2c-gpio.h"
+#include "linux/platform_device.h"
 
 #define WEIO_GPIO_LED_STA		1
 #define WEIO_GPIO_LED_AP		16
@@ -93,6 +95,23 @@ static struct gpio_keys_button weio_gpio_keys[] __initdata = {
 	}
 };
 
+static struct i2c_gpio_platform_data weio_i2c_gpio_data = {
+	.sda_pin        = 18,
+	.scl_pin        = 19,
+};
+
+static struct platform_device weio_i2c_gpio = {
+	.name           = "i2c-gpio",
+	.id             = 0,
+	.dev     = {
+		.platform_data  = &weio_i2c_gpio_data,
+	},
+};
+
+static struct platform_device *weio_devices[] __initdata = {
+        &weio_i2c_gpio
+};
+
 static void __init weio_common_setup(void)
 {
 	u8 *art = (u8 *) KSEG1ADDR(0x1fff0000);
@@ -128,6 +147,8 @@ static void __init weio_setup(void)
 				AR933X_GPIO_FUNC_ETH_SWITCH_LED2_EN |
 				AR933X_GPIO_FUNC_ETH_SWITCH_LED3_EN |
                 AR933X_GPIO_FUNC_ETH_SWITCH_LED4_EN);
+
+    platform_add_devices(weio_devices, ARRAY_SIZE(weio_devices));
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(weio_leds_gpio),
 				 weio_leds_gpio);
