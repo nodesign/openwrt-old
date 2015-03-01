@@ -1,0 +1,11 @@
+#!/bin/bash
+###
+# Related to the:
+# https://forum.openwrt.org/viewtopic.php?id=47600
+# http://whatschrisdoing.com/blog/2009/10/16/cross-compiling-python-extensions/
+# https://bitbucket.org/lambacck/distutilscross/issue/1
+
+cd $1
+echo "import setuptools" | cat - setup.py | python - build -x bdist_egg --plat-name=linux-mips
+
+
