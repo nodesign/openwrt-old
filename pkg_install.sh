@@ -21,4 +21,8 @@
 ./scripts/feeds install alsa-utils
 ./scripts/feeds install cython
 ./scripts/feeds install gevent
+./scripts/feeds install -p weioExtra bluez-libs
+./scripts/feeds install -p weioExtra bluez-utils
+./scripts/feeds install -p weioExtra python-bluez
+./scripts/feeds install bluez-hcidump
 
